@@ -1,13 +1,12 @@
+import { promises as fs, writeFile } from "fs";
+
 class ProductManager {
     constructor() {
+        this.path = "./products.json";
         this.products = [];
     }
 
-    getProducts() {
-        return console.log(this.products);
-    }
-
-    addProduct = (title, description, price, thumbnail, code, stock) => {
+    async addProduct (title, description, price, thumbnail, code, stock) {
         const product = {
             title,
             description,
@@ -25,19 +24,46 @@ class ProductManager {
                 product.id = this.products[this.products.length - 1].id + 1;
             }
             this.products.push(product);
+            await fs.writeFile(this.path, JSON.stringify(this.products), "utf8");
         } else {
             return console.log("No puede repetirse");
         }
     };
 
-    getProductById = (productId) => {
-        const idProduct = this.products.find((product) => product.id === productId);
+    async getProducts() {
+        const allProducts = await fs.readFile(this.path, "utf8");
+        let parsedProducts = JSON.parse(allProducts);
+        console.log(parsedProducts);
+        return parsedProducts;
+    }
+
+    async getProductById (productId) {
+        let allProducts = await this.getProducts();
+        const idProduct = allProducts.find((product) => product.id === productId);
         if (idProduct) {
-            return console.log(idProduct);
+            console.log(idProduct);
+            return idProduct;
         } else {
             return console.log("No encontrado");
         }
     };
+
+async updateById({ id, ...product }) {
+    await this.deleteById(id);
+    let oldProduct = await this.getProducts();
+
+    let updatedProduct = [{ id, ...product }, ...oldProduct];
+    await fs.writeFile(this.path, JSON.stringify(updatedProduct), "utf8");
+}
+
+async deleteById(id) {
+    let products = await fs.readFile(this.path, "utf8");
+    let allProducts = JSON.parse(products);
+    let deletedProduct = allProducts.filter((product) => product.id !== id);
+    await fs.writeFile(this.path, JSON.stringify(deletedProduct), "utf8");
+    console.log("Ha sido eliminado");
+    console.log(deletedProduct);
+}
 }
 
 const product = new ProductManager();
@@ -67,4 +93,18 @@ product.addProduct(
 );
 product.getProducts();
 product.getProductById(1);
-product.getProductById(4);
+product.getProductById(3);
+
+product.getProducts();
+product.getProductById(1);
+product.getProductById(9);
+product.deleteById(1);
+product.updateById({
+    title: "Producto prueba2",
+        description: "Este producto es una prueba",
+        price: 500,
+        thumbnail: "Sin img",
+        code: "abc129",
+        stock: 25,
+        id: 2,
+    });
