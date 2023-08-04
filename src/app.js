@@ -1,9 +1,6 @@
-//falta agregar la importación a productmanager
-
 import express from "express";
-//import ProductManager from "./ProductManager.js";
-//const manager = new ProductManager ("../files/products.json") dónde está?
-
+import ProductManager from "./ProductManager.js";
+const manager = new ProductManager("../files/products.json") 
 const app = express ()
 const PORT = 8080;
 

@@ -156,3 +156,5 @@ async function test() {
 }
 
 test().catch((error) => console.error(error));
+
+export default ProductManager;
