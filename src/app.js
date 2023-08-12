@@ -1,31 +1,17 @@
 import express from "express";
-import ProductManager from "./ProductManager.js";
-const manager = new ProductManager("../files/products.json") 
+import ProductsRouter from "./routes/ProductsRouter.js";
+import CartsRouter from "./routes/CartsRouter.js";
+
 const app = express ()
-const PORT = 8080;
 
-app.get("/products", async (req, res) => {
-    const {limit} = req.query
-    const products = await manager.getproducts()
-    if(limit) {
-        const limitproducts = products.slice (0,limit)
-        res.json({status:"success",limitproducts})
-    }
-    else{
-        res.json({status:"success",products})
-    }
-    
-})
+const PORT = 3000;
 
-app.get ("/products/:pid", async (req, res) => {
-    const {pid} = req.params
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-    const products =await manager.getproducts()
-    const productfind = products.find(e => e.id === parseInt(pid))
-    console.log(productfind);
-    res.send ({status:"success", productfind})
-})
+app.use("/api/products", ProductsRouter);
+app.use("/api/carts", CartsRouter);
 
-app.listen (PORT,() => {
-    console.log ("Está funcionando")
+app.listen(PORT, () => {
+    console.log(`Servidor está en el puerto ${PORT}`);
 });
