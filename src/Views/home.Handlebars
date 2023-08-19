@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Muestra de Productos</title>
+</head>
+<body>
+    <h1>Productos</h1>
+    <div class="container">
+
+{{#each products}}
+    <div class="card" id={{this.id}}>
+        <div class="card-body">
+        <img class="card-img" src={{this.thumbnail}} alt={{this.title}} />
+        <h5 class="card-title">{{this.title}}</h5>
+        <div class="card-info">
+            <p class="card-text">Descripción: {{this.description}}</p>
+            <p class="card-text">Código: {{this.code}}</p>
+            <p class="card-text">Stock: {{this.stock}}</p>
+            <p class="card-text">Precio: ${{this.price}}</p>
+        </div>
+    </div>
+    </div>
+{{/each}}
+</div>
+</body>
+</html>

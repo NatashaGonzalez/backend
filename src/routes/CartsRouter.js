@@ -1,8 +1,19 @@
 import { Router } from "express";
 import CartManager from "../managers/CartsManager.js";
 import { __dirname } from "../utils.js";
+import { io } from "../your_socket_io_instance.js";
+
 const cartManager = new CartManager(__dirname + "/files/carts.json");
 const router = Router();
+
+io.on("connection", (socket) => {
+    console.log("Cliente conectado");
+
+    socket.on("productoAgregadoAlCarrito", async (productoId, cartId) => {
+        await cartManager.addProductToCart(cartId, productoId);
+        io.emit("productoAgregadoAlCarrito", cartId);
+    });
+});
 
 router.get("/", async (req, res) => {
     const carts = await cartManager.getCarts();

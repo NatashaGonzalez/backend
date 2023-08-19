@@ -83,7 +83,7 @@ export default class CartManager {
             const carts = await this.getCarts();
             const cartIndex = carts.findIndex((cart) => cart.id === cid);
             if (cartIndex === -1) {
-                return `No se pudo encontrar el carrito con su id: `;
+                return `No se pudo encontrar el carrito con su id:${id} `;
             }
             carts[cartIndex] = {
                 ...carts[cartIndex],
@@ -101,21 +101,7 @@ export default class CartManager {
             const carts = await this.getCarts();
             const index = carts.findIndex((cart) => cart.id === id);
             if (index === -1) {
-                return `No se puede encontrar el carrito con el id: `;
-            }
-            carts.splice(index, 1);
-            await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
-            return carts;
-        } catch (error) {
-            console.error(error);
-        }
-    };
-    deleteCart = async (id) => {
-        try {
-            const carts = await this.getCarts();
-            const index = carts.findIndex((cart) => cart.id === id);
-            if (index === -1) {
-                return `No se puede hallar el carrito: `;
+                return `No se puede encontrar el carrito con el id: ${id} `;
             }
             carts.splice(index, 1);
             await fs.promises.writeFile(this.path, JSON.stringify(carts, null, "\t"));
