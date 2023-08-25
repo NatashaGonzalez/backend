@@ -1,18 +1,22 @@
 import express from "express";
-import http from "http";
 import { Server } from "socket.io";
-import exphbs from "express-handlebars";
+import Handlebars from "express-handlebars";
 import routes from "./routes/viewsRouter.js"
 import ProductsRouter from "./routes/ProductsRouter.js";
 import CartsRouter from "./routes/CartsRouter.js";
 
+import { __dirname } from "./utils.js";
+
 const app = express();
-const server = http.createServer(app);
 const io = new Server(server);
 
-const PORT = 2023;
+const PORT = process.env.PORT ||8080;
 
-app.engine("handlebars", exphbs());
+const server = app.listen(PORT, () => 
+    console.log(`Servidor está en el puerto ${PORT}`));
+
+app.engine("handlebars", Handlebars.engine());
+app.set("view engine", `${__dirname}/views`);
 app.set("view engine", "handlebars");
 
 app.use(express.json());
@@ -26,17 +30,15 @@ app.use("/api/carts", CartsRouter);
 io.on("connection", (socket) => {
     console.log("Cliente conectado");
 
-    socket.on("agregarProducto", (producto) => {
+    socket.on("ProductoAgregado", (producto) => {
         io.emit("productoAgregado", producto);
     });
 
     socket.on("eliminarProducto", (productoId) => {
-        io.emit("productoEliminado", productoId);
+        io.emit("eliminarProducto", productoId);
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`Servidor está en el puerto ${PORT}`);
-});
+
 
 
